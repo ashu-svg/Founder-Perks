@@ -1,69 +1,61 @@
-FounderPerks
+🚀 FounderPerks
 Empowering early-stage founders with the tools they actually need.
-Hey there! This is FounderPerks, a full-stack platform I built to help startup founders claim exclusive deals and cloud credits. It’s a project that took me through the deep ends of the MERN stack—from handling database relationships in MongoDB to making sure the UI feels snappy with Next.js and Tailwind CSS.
+FounderPerks is a full-stack platform built to help startup founders, early-stage teams, and indie hackers claim exclusive deals and cloud credits. This project bridges the gap between expensive SaaS tools and founders who need them to scale.
 
-The Backstory
-I wanted to build something that felt real. Founders often struggle to find all their startup credits in one place, so I created a "Deals Marketplace". The biggest challenge was making sure that when a user clicks "Claim," the data actually follows them back to their private dashboard. After a few rounds of debugging backend routes and password hashing, it’s now fully functional.
+The Story
+Building FounderPerks was a deep dive into the MERN stack. The core mission was to create a "restricted access" environment—ensuring that high-value perks, like $5,000 in AWS credits, are only accessible to verified, logged-in founders.
 
-What it Does
-Authentication: Users can sign up and log in securely. Their passwords aren't stored as plain text—I used bcrypt to hash them for safety.
+Technical Deep-Dive
+1. End-to-End Application Flow
+Discovery: Users arrive at the landing page to browse available partner deals.
 
-The Marketplace: A clean grid of partner deals (like AWS and Notion) fetched directly from a MongoDB database.
+Authentication: To "Claim" a deal, users must register or sign in.
 
-Real-time Dashboard: A private space for founders to see their status and a list of every perk they've claimed.
+Interaction: Once logged in, the Navbar updates to show a personalized welcome message.
 
-Responsive UI: It looks just as good on a phone as it does on a 27-inch monitor.
+Fulfillment: Users claim perks on the /deals page, which are then instantly synced and displayed on their private /dashboard.
 
-The Tech I Used
-Frontend: Next.js 15 (App Router), Tailwind CSS for styling, and Framer Motion for those smooth animations.
+2. Authentication and Authorization Strategy
+Strategy: Stateless authentication using JSON Web Tokens (JWT).
 
-Backend: Node.js and Express.js to handle the API logic.
+Authorization: Protected backend routes verify the JWT before allowing a user to claim a perk or view dashboard data.
 
-Database: MongoDB with Mongoose to keep track of users and their claimed deals.
+Security: User passwords are encrypted using BcryptJS hashing before storage in MongoDB.
 
-How to Run it Locally
-Clone the repo (You're already here!).
+3. Internal Flow of Claiming a Deal
+When a user clicks "Claim Perk," the frontend triggers an API POST request to the backend with the userId and perkId.
 
-Backend Setup:
+The backend identifies the user in MongoDB and pushes the unique perkId into the user's claimedPerks array.
 
-Navigate to /backend and run npm install.
+The dashboard then performs a .populate() query to convert those IDs into full deal details (Name, Value, Description) for display.
 
-Add your MONGO_URI and JWT_SECRET to a .env file.
+4. Interaction Between Frontend and Backend
+The Next.js frontend communicates with the Node.js/Express backend via RESTful API endpoints.
 
-Fire it up with node server.js.
+The frontend uses the fetch API to send data and handles responses (success alerts or error screens) based on HTTP status codes.
 
-Frontend Setup:
+5. Known Limitations & Weak Points
+Persistence: Session data is stored in localStorage, which can be cleared by the user, requiring a re-login.
 
-Navigate to /frontend and run npm install.
+Manual Verification: Currently, perk "verification" is simulated; a production version would require API integration with partners like AWS or Notion.
 
-Start the dev server with npm run dev.
+6. Improvements Required for Production Readiness
+Secure Cookies: Moving from localStorage to httpOnly cookies for JWT storage to prevent XSS.
 
-Head over to localhost:3000 and start claiming perks!
+Input Validation: Adding a validation layer (like Zod) to ensure all incoming API data is clean.
 
-Lessons Learned (The Hard Way)
-Building FounderPerks wasn't just about writing code; it was about solving puzzles. Here are a few things I learned while getting my hands dirty with the MERN stack:
+Email Integration: Sending automated "Claim Confirmation" emails to founders.
 
-Middleware is Precise: I learned that in Mongoose async middleware, calling next() can actually crash your server with a "next is not a function" error. Keeping the flow clean is key to a stable backend.
+7. UI and Performance Considerations
+Responsive Design: Built with Tailwind CSS to ensure a mobile-first, professional layout.
 
-The Power of Population: I realized that storing just an ID in the database isn't enough. Using .populate() in Express is the "magic" that allows the dashboard to display actual perk names like "AWS" instead of just a long string of random numbers.
+GPU Acceleration: Utilized Framer Motion for smooth, high-performance animations on the dashboard and deal cards.
 
-Safe Navigation in React: I hit a few "red screen" crashes because I tried to read data before it finished loading from the API. Learning to use the optional chaining operator (?.) saved my UI from breaking while the database was still thinking.
+Tech Stack
+Frontend: Next.js 15, Tailwind CSS, Framer Motion, Lucide Icons.
 
-Environment Variables Matter: I discovered that having duplicate keys in a .env file can silently break your JWT authentication. Keeping your configuration clean is just as important as keeping your code clean.
+Backend: Node.js, Express.js, JWT, BcryptJS.
 
-UI Hierarchy: I struggled with "double headers" until I realized how Next.js handles global layouts. Moving the Navbar into layout.tsx was the "aha!" moment that made the whole site feel professional.
+Database: MongoDB (Mongoose ODM).
 
-What's Next? (Future Roadmap)
-Even though the core MERN loop is complete, there’s always room to grow. If I had more time, here’s what I’d build next:
-
-Email Notifications: Use Nodemailer or SendGrid to send an actual welcome email with the discount code as soon as a founder clicks "Claim".
-
-Search & Filter: As the list of partner deals grows, I’d add a search bar and category filters (e.g., "Cloud," "Marketing," "Design") so founders can find exactly what they need.
-
-Founder Profile Editing: Create a "Settings" page where users can update their startup name, profile picture, and change their password.
-
-Admin Dashboard: Build a secret portal for the "FounderPerks" team to add, edit, or delete deals directly from the UI instead of using MongoDB Compass.
-
-Dark Mode: Add a toggle for dark mode because, let’s be honest, most founders are working late into the night.
-
-Built with ☕ and curiosity by Tushar Bhardwaj.
+Built by Tushar Bhardwaj
